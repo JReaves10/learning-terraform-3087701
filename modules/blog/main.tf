@@ -32,19 +32,6 @@ module "blog_vpc" {
   }
 }
 
-resource "aws_instance" "blog" {
-  ami           = data.aws_ami.app_ami.id
-  instance_type = var.instance_type
-
-  vpc_security_group_ids = [module.blog_sg.security_group_id]
-
-  subnet_id = module.blog_vpc.public_subnets[0]
-
-  tags = {
-    Name = "Learning Terraform"
-  }
-}
-
 module "autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
 
@@ -74,6 +61,7 @@ module "blog_alb" {
   vpc_id          = module.blog_vpc.vpc_id
   subnets         = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
+  enable_deletion_protection = false
 
 listeners = {
   ex-http-https-redirect = {
@@ -93,7 +81,6 @@ listeners = {
       protocol         = "HTTP"
       port             = 80
       target_type      = "instance"
-      target_id        = aws_instance.blog.id
     }
   }
 
