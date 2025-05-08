@@ -55,12 +55,12 @@ module "autoscaling" {
   vpc_zone_identifier       = module.blog_vpc.public_subnets
   security_groups           = [module.blog_sg.security_group_id]
 
-  image_id      = data.aws_ami.id
+  image_id      = data.aws_ami.app_ami.id
   instance_type = var.instance_type
 
   traffic_source_attachments = [
     {
-      traffic_source_id = module.blog_alb.target_group_arn
+      traffic_source_id = module.blog_alb.target_groups["ex-instance"].arn
       type              = "elbv2"
     }
   ]
