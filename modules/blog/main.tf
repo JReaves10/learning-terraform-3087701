@@ -62,7 +62,6 @@ module "blog_alb" {
   subnets         = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
   enable_deletion_protection = false
-  create_target_group_attachment = false
 
 listeners = {
   ex-http-https-redirect = {
